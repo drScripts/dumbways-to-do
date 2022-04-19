@@ -9,4 +9,7 @@ module.exports = {
   dbDialect: process.env.DATABASE_DIALECT,
   port: process.env.PORT,
   appMode: process.env.NODE_ENV,
+  jwtSecret: process.env.APP_JWT_SECRET,
+  maxFileSize: process.env.APP_ALOWED_MAX_FILE_SIZE,
+  appUrl: process.env.APP_BASE_URL,
 };

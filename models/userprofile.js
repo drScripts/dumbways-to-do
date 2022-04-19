@@ -35,11 +35,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       profession: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       profile_pict: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
     },
     {

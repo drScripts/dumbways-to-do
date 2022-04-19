@@ -16,7 +16,7 @@ module.exports = {
       },
       profession: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       profile_pict: {
         type: Sequelize.STRING,
