@@ -1,5 +1,5 @@
 "use strict";
-const { Model, Sequelize, DataTypes } = require("sequelize");
+const { Model, DataTypes, Sequelize } = require("sequelize");
 
 /**
  *
@@ -8,52 +8,53 @@ const { Model, Sequelize, DataTypes } = require("sequelize");
  * @returns
  */
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
+  class Project extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      User.hasOne(models.UserProfile, {
+      Project.belongsTo(models.User, {
+        as: "user",
         onDelete: "CASCADE",
         foreignKey: "user_id",
-        as: "profile",
-      });
-
-      User.hasMany(models.Project, {
-        onDelete: "CASCADE",
-        foreignKey: "user_id",
-        as: "projects",
       });
     }
   }
-  User.init(
+  Project.init(
     {
       id: {
         type: DataTypes.INTEGER,
-        autoIncrement: true,
         allowNull: false,
+        autoIncrement: true,
         primaryKey: true,
       },
-      name: {
+      title: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      password: {
+      description: {
+        allowNull: true,
         type: DataTypes.TEXT,
+      },
+      user_id: {
         allowNull: false,
+        type: DataTypes.INTEGER,
+        references: {
+          key: "id",
+          model: {
+            tableName: "users",
+          },
+        },
       },
     },
     {
       sequelize,
-      modelName: "User",
-      tableName: "users",
+      modelName: "Project",
+      tableName: "projects",
+      timestamps: true,
     }
   );
-  return User;
+  return Project;
 };
