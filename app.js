@@ -7,6 +7,7 @@ const auth = require("./middleware/auth");
 
 const usersRouter = require("./routes/users");
 const projectsRouter = require("./routes/project");
+const tasksRouter = require("./routes/task");
 
 const app = express();
 
@@ -25,6 +26,7 @@ const prefix = "/api/v1";
 app.use(`${prefix}`, usersRouter);
 app.use(auth);
 app.use(`${prefix}/projects`, projectsRouter);
+app.use(`${prefix}/tasks`, tasksRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

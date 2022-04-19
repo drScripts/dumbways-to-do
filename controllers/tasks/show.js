@@ -1,4 +1,4 @@
-const { Project } = require("../../models");
+const { Task } = require("../../models");
 const { request, response } = require("express");
 
 /**
@@ -8,13 +8,19 @@ const { request, response } = require("express");
  */
 module.exports = async (req, res) => {
   try {
-    const { id } = req.user;
+    const { id } = req.params;
 
-    const projects = await Project.findAll({ where: { user_id: id } });
+    const task = await Task.findByPk(id);
+
+    if (!task)
+      return res.status(404).json({
+        status: "not found",
+        message: "Can't find Task with that id",
+      });
 
     res.status(200).json({
-      status: "success",
-      data: { projects },
+      status: "created",
+      data: { task },
     });
   } catch (err) {
     console.log(err);

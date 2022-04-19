@@ -1,5 +1,5 @@
 "use strict";
-const { Model, DataTypes, Sequelize } = require("sequelize");
+const { Model, Sequelize, DataTypes } = require("sequelize");
 
 /**
  *
@@ -8,27 +8,21 @@ const { Model, DataTypes, Sequelize } = require("sequelize");
  * @returns
  */
 module.exports = (sequelize, DataTypes) => {
-  class Project extends Model {
+  class Task extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Project.belongsTo(models.User, {
-        as: "user",
-        onDelete: "CASCADE",
-        foreignKey: "user_id",
-      });
-
-      Project.hasMany(models.Task, {
-        as: "tasks",
-        onDelete: "CASCADE",
+      Task.belongsTo(models.Project, {
+        as: "project",
         foreignKey: "project_id",
+        onDelete: "CASCADE",
       });
     }
   }
-  Project.init(
+  Task.init(
     {
       id: {
         type: DataTypes.INTEGER,
@@ -42,25 +36,30 @@ module.exports = (sequelize, DataTypes) => {
       },
       description: {
         allowNull: true,
-        type: DataTypes.TEXT,
+        type: DataTypes.STRING,
       },
-      user_id: {
+      status: {
         allowNull: false,
+        type: DataTypes.ENUM,
+        values: ["pending", "on-working", "complete"],
+        defaultValue: "pending",
+      },
+      project_id: {
         type: DataTypes.INTEGER,
         references: {
           key: "id",
           model: {
-            tableName: "users",
+            tableName: "projects",
           },
         },
+        onDelete: "CASCADE",
       },
     },
     {
       sequelize,
-      modelName: "Project",
-      tableName: "projects",
-      timestamps: true,
+      modelName: "Task",
+      tableName: "tasks",
     }
   );
-  return Project;
+  return Task;
 };
