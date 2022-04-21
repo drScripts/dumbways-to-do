@@ -1,4 +1,4 @@
-const { Project } = require("../../models");
+const { Project, Task } = require("../../models");
 const { request, response } = require("express");
 
 /**
@@ -10,7 +10,12 @@ module.exports = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const project = await Project.findByPk(id);
+    const project = await Project.findByPk(id, {
+      include: {
+        as: "tasks",
+        model: Task,
+      },
+    });
 
     if (!project)
       return res.status(404).json({
