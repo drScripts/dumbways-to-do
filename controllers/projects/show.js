@@ -14,7 +14,9 @@ module.exports = async (req, res) => {
       include: {
         as: "tasks",
         model: Task,
+        order: [["createdAt", "ASC"]],
       },
+      order: [["createdAt", "ASC"]],
     });
 
     if (!project)

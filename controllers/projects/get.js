@@ -1,5 +1,6 @@
 const { Project, Task } = require("../../models");
 const { request, response } = require("express");
+const { Model } = require("sequelize");
 
 /**
  *
@@ -15,7 +16,9 @@ module.exports = async (req, res) => {
       include: {
         as: "tasks",
         model: Task,
+        order: [["createdAt", "ASC"]],
       },
+      order: [["createdAt", "ASC"]],
     });
 
     const mappedProjects = projects?.map((project) => {
