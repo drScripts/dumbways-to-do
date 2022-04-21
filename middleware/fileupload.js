@@ -9,6 +9,7 @@ module.exports = (requestName, folderName = "users", required = false) => {
       cb(null, folderPath);
     },
     filename: (req, file, cb) => {
+      console.log("FILEEEEE", file);
       cb(null, Date.now() + "-" + file.originalname);
     },
   });

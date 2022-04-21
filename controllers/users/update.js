@@ -4,7 +4,13 @@ const Joi = require("joi");
 const { getFileUrl } = require("../../helpers");
 const path = require("path");
 const fs = require("fs");
-const { Model } = require("sequelize");
+const {
+  isProduction,
+  cloudApiKey,
+  cloudApiSecret,
+  cloudName,
+} = require("../../config");
+const cloudinary = require("cloudinary").v2;
 
 /**
  *
@@ -56,14 +62,42 @@ module.exports = async (req, res) => {
     }
 
     if (file) {
-      dataProfile.profile_pict = file.filename;
-      const filePath = path.resolve(
-        __dirname,
-        `../../public/images/users/${user?.profile?.profile_pict}`
-      );
-      console.log("FILEPATH", filePath);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+      if (isProduction) {
+        cloudinary.config({
+          api_key: cloudApiKey,
+          api_secret: cloudApiSecret,
+          cloud_name: cloudName,
+        });
+
+        const { url } = await cloudinary.uploader.upload(file.path, {
+          use_filename: true,
+          unique_filename: false,
+          folder: "todo_users",
+        });
+
+        dataProfile.profile_pict = url;
+
+        if (user?.profile?.profile_pict?.search("http") !== -1) {
+          const lastFileName = user?.profile?.profile_pict?.split("/");
+          const folderName = lastFileName[lastFileName?.length - 2];
+          const cloudFileName = lastFileName?.pop()?.split(".")[0];
+          console.log(folderName, cloudFileName);
+          const public_id = `${folderName}/${cloudFileName}`;
+          await cloudinary.uploader.destroy(public_id, {
+            resource_type: "image",
+          });
+        }
+      } else {
+        dataProfile.profile_pict = file.filename;
+
+        const filePath = path.resolve(
+          __dirname,
+          `../../public/images/users/${user?.profile?.profile_pict}`
+        );
+
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
       }
     }
 

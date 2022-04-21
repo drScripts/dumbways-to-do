@@ -3,8 +3,15 @@ const Joi = require("joi");
 const { User, UserProfile } = require("../../models");
 const { hashSync } = require("bcrypt");
 const { getFileUrl } = require("../../helpers");
-const { jwtSecret } = require("../../config");
+const {
+  jwtSecret,
+  isProduction,
+  cloudApiKey,
+  cloudApiSecret,
+  cloudName,
+} = require("../../config");
 const { sign } = require("jsonwebtoken");
+const cloudinary = require("cloudinary").v2;
 
 /**
  *
@@ -61,7 +68,22 @@ module.exports = async (req, res) => {
     };
 
     if (file) {
-      profileData.profile_pict = file.filename;
+      if (isProduction) {
+        cloudinary.config({
+          api_key: cloudApiKey,
+          cloud_name: cloudName,
+          api_secret: cloudApiSecret,
+        });
+
+        const { url } = await cloudinary.uploader.upload(file.path, {
+          use_filename: true,
+          unique_filename: false,
+          folder: "todo_users",
+        });
+        profileData.profile_pict = url;
+      } else {
+        profileData.profile_pict = file.filename;
+      }
     }
 
     await UserProfile.create(profileData);

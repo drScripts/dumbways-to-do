@@ -12,4 +12,8 @@ module.exports = {
   jwtSecret: process.env.APP_JWT_SECRET,
   maxFileSize: process.env.APP_ALOWED_MAX_FILE_SIZE,
   appUrl: process.env.APP_BASE_URL,
+  cloudName: process.env.CLOUDINARY_NAME,
+  cloudApiKey: process.env.CLOUDINARY_API_KEY,
+  cloudApiSecret: process.env.CLOUDINARY_API_SECRET,
+  isProduction: true,
 };

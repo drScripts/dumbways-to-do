@@ -1,4 +1,4 @@
-const { Project } = require("../../models");
+const { Project, Task } = require("../../models");
 const { request, response } = require("express");
 
 /**
@@ -10,11 +10,27 @@ module.exports = async (req, res) => {
   try {
     const { id } = req.user;
 
-    const projects = await Project.findAll({ where: { user_id: id } });
+    const projects = await Project.findAll({
+      where: { user_id: id },
+      include: {
+        as: "tasks",
+        model: Task,
+      },
+    });
+
+    const mappedProjects = projects?.map((project) => {
+      project.dataValues.count_task = project?.tasks?.length;
+
+      const tasksFinished = project?.tasks?.filter(
+        (task) => task?.status === "complete"
+      );
+      project.dataValues.count_task_complete = tasksFinished?.length || 0;
+      return project;
+    });
 
     res.status(200).json({
       status: "success",
-      data: { projects },
+      data: { projects: mappedProjects },
     });
   } catch (err) {
     console.log(err);
