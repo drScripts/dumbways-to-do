@@ -123,7 +123,7 @@ module.exports = async (req, res) => {
 
     res.status(201).json({
       status: "success",
-      data: { newUser },
+      data: { user:newUser },
     });
   } catch (err) {
     console.log(err);
