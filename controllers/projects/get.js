@@ -1,6 +1,5 @@
 const { Project, Task } = require("../../models");
 const { request, response } = require("express");
-const { Model } = require("sequelize");
 
 /**
  *
