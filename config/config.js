@@ -1,25 +1,4 @@
-const {
-  dbName,
-  dbPass,
-  dbPort,
-  dbUser,
-  dbHost,
-  dbDialect,
-  appMode,
-} = require("./");
-
-const configProduction = {
-  use_env_variable: "DATABASE_URL",
-  dialect: "postgres",
-  protocol: "postgres",
-};
-
-if (appMode === "production") {
-  configProduction.ssl = {
-    require: true,
-    rejectUnauthorized: false,
-  };
-}
+const { dbName, dbPass, dbPort, dbUser, dbHost, dbDialect } = require("./");
 
 module.exports = {
   development: {
@@ -38,5 +17,15 @@ module.exports = {
     dialect: dbDialect,
     port: dbPort,
   },
-  production: configProduction,
+  production: {
+    use_env_variable: "DATABASE_URL",
+    dialect: "postgres",
+    protocol: "postgres",
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
+  },
 };
